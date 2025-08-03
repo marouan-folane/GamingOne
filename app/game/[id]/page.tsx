@@ -25,7 +25,6 @@ export default function GamePage({ params }: GamePageProps) {
   const [showCPAModal, setShowCPAModal] = useState(false)
   const game = games.find((g) => g.id === params.id)
 
-  // Injection scripts for CPA locker
   useEffect(() => {
     if (showCPAModal) {
       const timeout = setTimeout(() => {
@@ -74,7 +73,6 @@ export default function GamePage({ params }: GamePageProps) {
     setShowCPAModal(true)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCPAComplete = () => {
     window.open("https://romsfun.com/roms/playstation-2/", "_blank")
     setShowCPAModal(false)
@@ -82,7 +80,6 @@ export default function GamePage({ params }: GamePageProps) {
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Header */}
       <header className="border-b border-purple-500/20 bg-black/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
           <Link href="/">
@@ -96,7 +93,6 @@ export default function GamePage({ params }: GamePageProps) {
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Game Cover */}
           <div className="lg:col-span-1">
             <Card className="bg-gray-800/50 border-gray-700 overflow-hidden">
               <CardContent className="p-0">
@@ -113,7 +109,6 @@ export default function GamePage({ params }: GamePageProps) {
               </CardContent>
             </Card>
 
-            {/* Download Button */}
             <Button
               onClick={handleDownload}
               className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 text-lg"
@@ -128,7 +123,6 @@ export default function GamePage({ params }: GamePageProps) {
             </p>
           </div>
 
-          {/* Game Details */}
           <div className="lg:col-span-2">
             <div className="mb-6">
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{game.title}</h1>
@@ -154,7 +148,6 @@ export default function GamePage({ params }: GamePageProps) {
               </div>
             </div>
 
-            {/* Description */}
             <Card className="bg-gray-800/50 border-gray-700 mb-6">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
@@ -163,11 +156,10 @@ export default function GamePage({ params }: GamePageProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-300 leading-relaxed">{game.description}</p>
+                <p className="text-gray-300 leading-relaxed">{game.description.replace(/'/g, "&apos;")}</p>
               </CardContent>
             </Card>
 
-            {/* Game Info */}
             <Card className="bg-gray-800/50 border-gray-700">
               <CardHeader>
                 <CardTitle className="text-white">Game Information</CardTitle>
@@ -197,7 +189,6 @@ export default function GamePage({ params }: GamePageProps) {
         </div>
       </div>
 
-      {/* CPA Modal */}
       <Dialog open={showCPAModal} onOpenChange={setShowCPAModal}>
         <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-md">
           <DialogHeader>
@@ -213,7 +204,6 @@ export default function GamePage({ params }: GamePageProps) {
                 Complete the verification below to start your download.
               </p>
 
-              {/* CPA Locker Container */}
               <div
                 id="cpa-locker-container"
                 className="min-h-[200px] bg-black/20 border border-purple-500/30 rounded-lg p-4 mb-4"
