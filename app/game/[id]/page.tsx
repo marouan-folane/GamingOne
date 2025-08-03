@@ -11,13 +11,14 @@ import DownloadCPAButton from "../DownloadCPAButton"
 // Ce fichier NE DOIT PAS avoir "use client"
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function GamePage({ params }: Props) {
-  const game = games.find((g) => g.id === params.id)
+  const { id } = await params
+  const game = games.find((g) => g.id === id)
 
   if (!game) return notFound()
 
