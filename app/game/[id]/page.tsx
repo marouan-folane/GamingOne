@@ -1,71 +1,25 @@
-"use client"
-import { useState, useEffect } from "react"
+import { games } from "@/lib/games-data"
+import { notFound } from "next/navigation"
+import Image from "next/image"
 import { ArrowLeft, Download, Calendar, Tag, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { games } from "@/lib/games-data"
-import Image from "next/image"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog"
+import DownloadCPAButton from "../DownloadCPAButton"
 
-export default function GamePage({ params }: { params: { id: string } }) {
-  const [showCPAModal, setShowCPAModal] = useState(false)
+// Ce fichier NE DOIT PAS avoir "use client"
+
+type Props = {
+  params: {
+    id: string
+  }
+}
+
+export default async function GamePage({ params }: Props) {
   const game = games.find((g) => g.id === params.id)
 
-  useEffect(() => {
-    if (showCPAModal) {
-      const timeout = setTimeout(() => {
-        const inlineScript = document.createElement("script")
-        inlineScript.innerHTML = "const adblockRedirect = 'https://bestlocker.eu/adblock';"
-        document.body.appendChild(inlineScript)
-
-        const lockerScript = document.createElement("script")
-        lockerScript.id = "cpljs-dad085b0-6f94-11f0-a126-8a5fb7be40ea"
-        lockerScript.src = "https://bestlocker.eu/iframeLoader/dad085b0-6f94-11f0-a126-8a5fb7be40ea"
-        lockerScript.type = "text/javascript"
-        document.body.appendChild(lockerScript)
-
-        const noScriptTag = document.createElement("noscript")
-        noScriptTag.innerHTML = `<meta http-equiv="refresh" content="0;url=https://bestlocker.eu/noscript"/>`
-        document.head.appendChild(noScriptTag)
-      }, 1000)
-
-      return () => {
-        clearTimeout(timeout)
-        const existingScript = document.getElementById(
-          "cpljs-dad085b0-6f94-11f0-a126-8a5fb7be40ea"
-        )
-        if (existingScript) existingScript.remove()
-      }
-    }
-  }, [showCPAModal])
-
-  if (!game) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Game Not Found</h1>
-          <Link href="/">
-            <Button className="bg-purple-600 hover:bg-purple-700">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Games
-            </Button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  const handleDownload = () => {
-    setShowCPAModal(true)
-  }
+  if (!game) return notFound()
 
   return (
     <div className="min-h-screen bg-black">
@@ -98,18 +52,7 @@ export default function GamePage({ params }: { params: { id: string } }) {
               </CardContent>
             </Card>
 
-            <Button
-              onClick={handleDownload}
-              className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 text-lg"
-              size="lg"
-            >
-              <Download className="w-5 h-5 mr-2" />
-              Download Game
-            </Button>
-
-            <p className="text-xs text-gray-400 mt-2 text-center">
-              Compatible with PCX2 Emulator
-            </p>
+            <DownloadCPAButton />
           </div>
 
           <div className="lg:col-span-2">
@@ -179,42 +122,6 @@ export default function GamePage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
-
-      <Dialog open={showCPAModal} onOpenChange={setShowCPAModal}>
-        <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-center">🎮 Complete to Download</DialogTitle>
-            <DialogDescription className="text-gray-300 text-center">
-              Complete the verification below to start your download.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div className="bg-gray-700/50 rounded-lg p-4 text-center">
-              <p className="text-sm text-gray-300 mb-3">
-                Complete the verification below to start your download.
-              </p>
-
-              <div
-                id="cpa-locker-container"
-                className="min-h-[200px] bg-black/20 border border-purple-500/30 rounded-lg p-4 mb-4"
-              >
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-2"></div>
-                    <p className="text-xs text-gray-400">Loading verification...</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-xs text-gray-400 text-center">
-                <p>After completing verification, your download will start automatically.</p>
-                <p className="mt-1">Game will be compatible with PCX2 emulator.</p>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
