@@ -21,7 +21,7 @@ export default function RootLayout({
 
     <html lang="en">
       {/* mylead-verification: a59c8829723a60cd430c848d302431ca  */}
-      token:a59c8829723a60cd430c848d302431ca
+      {/* token:a59c8829723a60cd430c848d302431ca */}
       <body className={inter.className}>{children}</body>
     </html>
   )
