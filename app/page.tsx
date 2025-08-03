@@ -73,12 +73,7 @@ export default function HomePage() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Game Image */}
         <div className="absolute inset-0 z-0">
-          <img
-            src="./bg.jpg"
-           
-            alt="Featured Game Background"
-            className="w-full h-full object-cover scale-110"
-          />
+        
           {/* Multiple overlay gradients for cinematic effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50"></div>
@@ -111,7 +106,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-2">God of War</h3>
                 <p className="text-gray-300 text-sm mb-4">
-                  The legendary action-adventure that redefined gaming. Experience Kratos' brutal journey through
+                  The legendary action-adventure that redefined gaming. Experience Kratos brutal journey through
                   ancient Greece.
                 </p>
                 <div className="flex items-center gap-4">
@@ -327,10 +322,10 @@ alt={game.title}
             <div className="mb-4">
               <span className="text-2xl">💡</span>
             </div>
-            <p className="text-gray-300 max-w-2xl mx-auto">
-              This site is for nostalgic purposes. All game files are meant for backup only. Please own the original
-              copies. Games are compatible with PCX2 emulator (PS2 emulator).
-            </p>
+        <p className="text-gray-300 max-w-2xl mx-auto">
+  This site is for nostalgic purposes. All game files are meant for backup only. Please own the original copies. Games are compatible with PCX2 emulator (PS2 emulator).
+</p>
+
             <div className="mt-6 text-sm text-gray-500">
               <p>&copy; 2024 GAMING ONE. All rights reserved.</p>
             </div>
