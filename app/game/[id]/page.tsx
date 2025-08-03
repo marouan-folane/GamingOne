@@ -1,7 +1,7 @@
 import { games } from "@/lib/games-data"
 import { notFound } from "next/navigation"
 import Image from "next/image"
-import { ArrowLeft, Download, Calendar, Tag, Info } from "lucide-react"
+import { ArrowLeft, Calendar, Tag, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
