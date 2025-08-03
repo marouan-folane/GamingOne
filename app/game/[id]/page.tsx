@@ -15,13 +15,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 
-interface GamePageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function GamePage({ params }: GamePageProps) {
+export default function GamePage({ params }: { params: { id: string } }) {
   const [showCPAModal, setShowCPAModal] = useState(false)
   const game = games.find((g) => g.id === params.id)
 
