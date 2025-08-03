@@ -1,14 +1,15 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "GAMING ONE - Relive PS2 Nostalgia",
-  description: "Download classic PlayStation 2 games and relive the nostalgia. Compatible with PCX2 emulator.",
-  keywords: "PS2 games, PlayStation 2, retro gaming, PCX2, emulator, classic games",
+  title: 'PS2 Games Collection',
+  description: 'Discover amazing PlayStation 2 games compatible with PCX2 emulator',
+  other: {
+    'mylead-verification': 'a59c8829723a60cd430c848d302431ca'
+  }
 }
 
 export default function RootLayout({
@@ -17,7 +18,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+
+    <html lang="en">
+      {/* mylead-verification: a59c8829723a60cd430c848d302431ca  */}
+      token:a59c8829723a60cd430c848d302431ca
       <body className={inter.className}>{children}</body>
     </html>
   )
