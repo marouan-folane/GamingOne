@@ -73,11 +73,6 @@ export default function GamePage({ params }: GamePageProps) {
     setShowCPAModal(true)
   }
 
-  const handleCPAComplete = () => {
-    window.open("https://romsfun.com/roms/playstation-2/", "_blank")
-    setShowCPAModal(false)
-  }
-
   return (
     <div className="min-h-screen bg-black">
       <header className="border-b border-purple-500/20 bg-black/50 backdrop-blur-sm">
@@ -156,7 +151,9 @@ export default function GamePage({ params }: GamePageProps) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-300 leading-relaxed">{game.description.replace(/'/g, "&apos;")}</p>
+                <p className="text-gray-300 leading-relaxed">
+                  {game.description.replace(/'/g, "&apos;")}
+                </p>
               </CardContent>
             </Card>
 

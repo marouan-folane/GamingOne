@@ -288,7 +288,7 @@ export default function HomePage() {
                   <div className="aspect-[3/4] relative overflow-hidden rounded-lg">
                     <Image
                       src={game.coverImage}
-                      alt={game.title}
+alt={game.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
