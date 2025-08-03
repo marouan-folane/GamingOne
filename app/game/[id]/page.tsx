@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { ArrowLeft, Download, Calendar, Tag, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,7 +7,13 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { games } from "@/lib/games-data"
 import Image from "next/image"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 
 interface GamePageProps {
   params: {
@@ -20,36 +25,31 @@ export default function GamePage({ params }: GamePageProps) {
   const [showCPAModal, setShowCPAModal] = useState(false)
   const game = games.find((g) => g.id === params.id)
 
-  // Add useEffect for CPA locker integration
+  // Injection scripts for CPA locker
   useEffect(() => {
     if (showCPAModal) {
-      // Delay showing the locker
       const timeout = setTimeout(() => {
-        // 1. adblockRedirect
         const inlineScript = document.createElement("script")
         inlineScript.innerHTML = "const adblockRedirect = 'https://bestlocker.eu/adblock';"
         document.body.appendChild(inlineScript)
 
-        // 2. Locker Script
         const lockerScript = document.createElement("script")
         lockerScript.id = "cpljs-dad085b0-6f94-11f0-a126-8a5fb7be40ea"
         lockerScript.src = "https://bestlocker.eu/iframeLoader/dad085b0-6f94-11f0-a126-8a5fb7be40ea"
         lockerScript.type = "text/javascript"
         document.body.appendChild(lockerScript)
 
-        // 3. noscript fallback
         const noScriptTag = document.createElement("noscript")
         noScriptTag.innerHTML = `<meta http-equiv="refresh" content="0;url=https://bestlocker.eu/noscript"/>`
         document.head.appendChild(noScriptTag)
-      }, 1000) // 1 second delay
+      }, 1000)
 
       return () => {
         clearTimeout(timeout)
-        // Cleanup scripts when modal closes
-        const existingScript = document.getElementById("cpljs-dad085b0-6f94-11f0-a126-8a5fb7be40ea")
-        if (existingScript) {
-          existingScript.remove()
-        }
+        const existingScript = document.getElementById(
+          "cpljs-dad085b0-6f94-11f0-a126-8a5fb7be40ea"
+        )
+        if (existingScript) existingScript.remove()
       }
     }
   }, [showCPAModal])
@@ -74,8 +74,8 @@ export default function GamePage({ params }: GamePageProps) {
     setShowCPAModal(true)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleCPAComplete = () => {
-    // This would redirect to the actual ROM download after CPA completion
     window.open("https://romsfun.com/roms/playstation-2/", "_blank")
     setShowCPAModal(false)
   }
@@ -100,11 +100,13 @@ export default function GamePage({ params }: GamePageProps) {
           <div className="lg:col-span-1">
             <Card className="bg-gray-800/50 border-gray-700 overflow-hidden">
               <CardContent className="p-0">
-                <div className="aspect-[3/4] relative">
+                <div className="aspect-[3/4] relative w-full h-full">
                   <Image
-                    src={game.coverImage||""}
+                    src={game.coverImage ?? "/placeholder.svg"}
                     alt={game.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    style={{ objectFit: "cover" }}
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
@@ -121,7 +123,9 @@ export default function GamePage({ params }: GamePageProps) {
               Download Game
             </Button>
 
-            <p className="text-xs text-gray-400 mt-2 text-center">Compatible with PCX2 Emulator</p>
+            <p className="text-xs text-gray-400 mt-2 text-center">
+              Compatible with PCX2 Emulator
+            </p>
           </div>
 
           {/* Game Details */}
@@ -205,7 +209,9 @@ export default function GamePage({ params }: GamePageProps) {
 
           <div className="space-y-4">
             <div className="bg-gray-700/50 rounded-lg p-4 text-center">
-              <p className="text-sm text-gray-300 mb-3">Complete the verification below to start your download.</p>
+              <p className="text-sm text-gray-300 mb-3">
+                Complete the verification below to start your download.
+              </p>
 
               {/* CPA Locker Container */}
               <div
