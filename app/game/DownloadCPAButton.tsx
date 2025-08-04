@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Download, Lock, X, AlertCircle } from "lucide-react"
 
@@ -29,7 +28,8 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
   }
 
   // Cleanup function
-  const cleanupMyLeadElements = useCallback(() => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const cleanupMyLeadElements = () => {
     try {
       // Remove scripts
       const elementsToRemove = [
@@ -64,7 +64,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     } catch (error) {
       addDebugInfo(`Cleanup error: ${error}`)
     }
-  })
+  }
 
   const checkAdBlocker = () => {
     // Simple ad blocker detection
