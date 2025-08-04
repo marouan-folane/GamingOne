@@ -27,10 +27,10 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
   }
 
-  // Cleanup function
+  // Fixed cleanup function with proper error handling
   const cleanupMyLeadElements = () => {
     try {
-      // Remove scripts
+      // Remove scripts with existence checks
       const elementsToRemove = [
         "mylead-locker-script",
         "mylead-inline-script", 
@@ -39,26 +39,40 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
       
       elementsToRemove.forEach(id => {
         const element = document.getElementById(id)
-        if (element) {
-          element.remove()
-          addDebugInfo(`Removed element: ${id}`)
+        if (element && element.parentNode) {
+          try {
+            element.parentNode.removeChild(element)
+            addDebugInfo(`Removed element: ${id}`)
+          } catch (removeError) {
+            // Element might have been removed already
+            addDebugInfo(`Element ${id} already removed or not in DOM`)
+          }
         }
       })
 
-      // Remove any dynamically created MyLead elements
+      // Remove any dynamically created MyLead elements with proper checks
       const myLeadElements = document.querySelectorAll('[id*="mylead"], [class*="mylead"], [id*="MyLead"], [class*="MyLead"]')
       myLeadElements.forEach(el => {
-        if (el.id !== "mylead-container") {
-          el.remove()
-          addDebugInfo(`Removed dynamic element: ${el.tagName}#${el.id}`)
+        if (el.id !== "mylead-container" && el.parentNode) {
+          try {
+            el.parentNode.removeChild(el)
+            addDebugInfo(`Removed dynamic element: ${el.tagName}#${el.id}`)
+          } catch (removeError) {
+            // Element might have been removed already
+            addDebugInfo(`Dynamic element already removed: ${el.tagName}#${el.id}`)
+          }
         }
       })
 
-      // Clear container
+      // Clear container safely
       const container = document.getElementById("mylead-container")
       if (container) {
-        container.innerHTML = ""
-        addDebugInfo("Cleared mylead-container")
+        try {
+          container.innerHTML = ""
+          addDebugInfo("Cleared mylead-container")
+        } catch (clearError) {
+          addDebugInfo(`Error clearing container: ${clearError}`)
+        }
       }
     } catch (error) {
       addDebugInfo(`Cleanup error: ${error}`)
@@ -66,22 +80,32 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
   }
 
   const checkAdBlocker = () => {
-    // Simple ad blocker detection
-    const testAd = document.createElement('div')
-    testAd.innerHTML = '&nbsp;'
-    testAd.className = 'adsbox'
-    testAd.style.position = 'absolute'
-    testAd.style.left = '-9999px'
-    document.body.appendChild(testAd)
-    
-    setTimeout(() => {
-      if (testAd.offsetHeight === 0) {
-        addDebugInfo("Ad blocker detected!")
-      } else {
-        addDebugInfo("No ad blocker detected")
-      }
-      testAd.remove()
-    }, 100)
+    try {
+      // Simple ad blocker detection
+      const testAd = document.createElement('div')
+      testAd.innerHTML = '&nbsp;'
+      testAd.className = 'adsbox'
+      testAd.style.position = 'absolute'
+      testAd.style.left = '-9999px'
+      document.body.appendChild(testAd)
+      
+      setTimeout(() => {
+        try {
+          if (testAd.offsetHeight === 0) {
+            addDebugInfo("Ad blocker detected!")
+          } else {
+            addDebugInfo("No ad blocker detected")
+          }
+          if (testAd.parentNode) {
+            testAd.parentNode.removeChild(testAd)
+          }
+        } catch (error) {
+          addDebugInfo(`Ad blocker test cleanup error: ${error}`)
+        }
+      }, 100)
+    } catch (error) {
+      addDebugInfo(`Ad blocker detection error: ${error}`)
+    }
   }
 
   useEffect(() => {
@@ -116,12 +140,16 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
 
         addDebugInfo("Container found, creating noscript...")
 
-        // Add noscript
-        const noscriptTag = document.createElement("noscript")
-        noscriptTag.id = "mylead-noscript"
-        noscriptTag.innerHTML = '<meta http-equiv="refresh" content="0;url=https://bestlocker.eu/noscript"/>'
-        document.head.appendChild(noscriptTag)
-        addDebugInfo("Added noscript tag")
+        // Add noscript with error handling
+        try {
+          const noscriptTag = document.createElement("noscript")
+          noscriptTag.id = "mylead-noscript"
+          noscriptTag.innerHTML = '<meta http-equiv="refresh" content="0;url=https://bestlocker.eu/noscript"/>'
+          document.head.appendChild(noscriptTag)
+          addDebugInfo("Added noscript tag")
+        } catch (noscriptError) {
+          addDebugInfo(`Noscript creation error: ${noscriptError}`)
+        }
 
         // Test script URL accessibility
         fetch("https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45", { 
@@ -167,41 +195,49 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
               addDebugInfo("Attempting direct iframe method...")
               const container = document.getElementById("mylead-container")
               if (container) {
-                // Try creating iframe directly with the locker URL
-                const iframe = document.createElement('iframe')
-                iframe.src = "https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45"
-                iframe.style.width = "100%"
-                iframe.style.height = "400px"
-                iframe.style.border = "none"
-                iframe.onload = () => addDebugInfo("Direct iframe loaded")
-                iframe.onerror = () => addDebugInfo("Direct iframe failed to load")
-                container.appendChild(iframe)
-                addDebugInfo("Direct iframe method attempted")
+                try {
+                  // Try creating iframe directly with the locker URL
+                  const iframe = document.createElement('iframe')
+                  iframe.src = "https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45"
+                  iframe.style.width = "100%"
+                  iframe.style.height = "400px"
+                  iframe.style.border = "none"
+                  iframe.onload = () => addDebugInfo("Direct iframe loaded")
+                  iframe.onerror = () => addDebugInfo("Direct iframe failed to load")
+                  container.appendChild(iframe)
+                  addDebugInfo("Direct iframe method attempted")
+                } catch (iframeError) {
+                  addDebugInfo(`Iframe creation error: ${iframeError}`)
+                }
               }
             }
             
             // Method 3: Try alternative script loading
             if (!foundObject) {
               addDebugInfo("Trying alternative script approach...")
-              const altScript = document.createElement("script")
-              altScript.innerHTML = `
-                (function() {
-                  var container = document.getElementById('mylead-container');
-                  if (container) {
-                    container.innerHTML = '<div style="text-align: center; padding: 20px; color: #fff;">Loading alternative method...</div>';
-                    
-                    // Try to load via fetch and eval (risky but for debugging)
-                    fetch('https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45')
-                      .then(response => response.text())
-                      .then(scriptContent => {
-                        console.log('Fetched script content length:', scriptContent.length);
-                        // Don't eval in production, just log for debugging
-                      })
-                      .catch(err => console.log('Fetch method failed:', err));
-                  }
-                })();
-              `
-              document.body.appendChild(altScript)
+              try {
+                const altScript = document.createElement("script")
+                altScript.innerHTML = `
+                  (function() {
+                    var container = document.getElementById('mylead-container');
+                    if (container) {
+                      container.innerHTML = '<div style="text-align: center; padding: 20px; color: #fff;">Loading alternative method...</div>';
+                      
+                      // Try to load via fetch and eval (risky but for debugging)
+                      fetch('https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45')
+                        .then(response => response.text())
+                        .then(scriptContent => {
+                          console.log('Fetched script content length:', scriptContent.length);
+                          // Don't eval in production, just log for debugging
+                        })
+                        .catch(err => console.log('Fetch method failed:', err));
+                    }
+                  })();
+                `
+                document.body.appendChild(altScript)
+              } catch (altScriptError) {
+                addDebugInfo(`Alternative script error: ${altScriptError}`)
+              }
             }
             
             // Check for any iframes or content in container
@@ -220,13 +256,17 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
                 addDebugInfo("5. Contact MyLead support with locker ID")
                 
                 // Add a test button to open locker URL directly
-                const testButton = document.createElement('button')
-                testButton.innerHTML = 'Test Locker URL Directly'
-                testButton.style.cssText = 'background: #7c3aed; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 10px;'
-                testButton.onclick = () => {
-                  window.open('https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45', '_blank')
+                try {
+                  const testButton = document.createElement('button')
+                  testButton.innerHTML = 'Test Locker URL Directly'
+                  testButton.style.cssText = 'background: #7c3aed; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 10px;'
+                  testButton.onclick = () => {
+                    window.open('https://bestlocker.eu/iframeLoader/88e5a58e-7131-11f0-b64c-c2a106037d45', '_blank')
+                  }
+                  container.appendChild(testButton)
+                } catch (buttonError) {
+                  addDebugInfo(`Test button creation error: ${buttonError}`)
                 }
-                container.appendChild(testButton)
               }
             }
             
@@ -259,14 +299,14 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     return () => {
       clearTimeout(timeout)
     }
-  }, [showCPAModal])
+  }, [showCPAModal, isLoading]) // Added isLoading to dependencies
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       cleanupMyLeadElements()
     }
-  }, [cleanupMyLeadElements])
+  }, [])
 
   return (
     <>
