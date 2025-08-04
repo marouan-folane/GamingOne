@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Download, Lock, X, AlertCircle } from "lucide-react"
 
@@ -22,13 +22,13 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
   const [debugInfo, setDebugInfo] = useState<string[]>([])
   const [showDebug, setShowDebug] = useState(false)
 
-  const addDebugInfo = (message: string) => {
+  const addDebugInfo = useCallback((message: string) => {
     console.log(`[MyLead Debug]: ${message}`)
     setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`])
-  }
+  }, [])
 
   // Fixed cleanup function with proper error handling
-  const cleanupMyLeadElements = () => {
+  const cleanupMyLeadElements = useCallback(() => {
     try {
       // Remove scripts with existence checks
       const elementsToRemove = [
@@ -43,7 +43,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
           try {
             element.parentNode.removeChild(element)
             addDebugInfo(`Removed element: ${id}`)
-          } catch (removeError) {
+          } catch {
             // Element might have been removed already
             addDebugInfo(`Element ${id} already removed or not in DOM`)
           }
@@ -57,7 +57,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
           try {
             el.parentNode.removeChild(el)
             addDebugInfo(`Removed dynamic element: ${el.tagName}#${el.id}`)
-          } catch (removeError) {
+          } catch {
             // Element might have been removed already
             addDebugInfo(`Dynamic element already removed: ${el.tagName}#${el.id}`)
           }
@@ -77,9 +77,9 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     } catch (error) {
       addDebugInfo(`Cleanup error: ${error}`)
     }
-  }
+  }, [addDebugInfo])
 
-  const checkAdBlocker = () => {
+  const checkAdBlocker = useCallback(() => {
     try {
       // Simple ad blocker detection
       const testAd = document.createElement('div')
@@ -106,7 +106,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     } catch (error) {
       addDebugInfo(`Ad blocker detection error: ${error}`)
     }
-  }
+  }, [addDebugInfo])
 
   useEffect(() => {
     if (!showCPAModal) {
@@ -299,14 +299,14 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     return () => {
       clearTimeout(timeout)
     }
-  }, [showCPAModal, isLoading]) // Added isLoading to dependencies
+  }, [showCPAModal, isLoading, checkAdBlocker, cleanupMyLeadElements, addDebugInfo])
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       cleanupMyLeadElements()
     }
-  }, [])
+  }, [cleanupMyLeadElements])
 
   return (
     <>
