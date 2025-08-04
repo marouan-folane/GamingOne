@@ -34,7 +34,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
 
             <div className="w-full h-[70vh] bg-gray-800 rounded-lg overflow-hidden">
               <iframe
-                src="https://best-click.pro/a/PNN2ws4yqi1ZL"
+                src="https://true-click.pro/a/zpp28IRJwsgMqw"
                 className="w-full h-full border-none"
                 title="CPA Offer"
                 sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
