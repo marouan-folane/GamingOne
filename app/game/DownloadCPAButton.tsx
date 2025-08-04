@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Download, Lock, X, AlertCircle } from "lucide-react"
 
@@ -11,7 +12,8 @@ interface DownloadCPAButtonProps {
 declare global {
   interface Window {
     adblockRedirect?: string;
-    MyLead?: any;
+    MyLead?: unknown;
+    [key: string]: unknown;
   }
 }
 
@@ -27,7 +29,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
   }
 
   // Cleanup function
-  const cleanupMyLeadElements = () => {
+  const cleanupMyLeadElements = useCallback(() => {
     try {
       // Remove scripts
       const elementsToRemove = [
@@ -62,7 +64,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     } catch (error) {
       addDebugInfo(`Cleanup error: ${error}`)
     }
-  }
+  })
 
   const checkAdBlocker = () => {
     // Simple ad blocker detection
@@ -150,7 +152,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
           setTimeout(() => {
             // Check various possible MyLead objects
             const possibleObjects = ['MyLead', 'mylead', 'myLead', 'BestLocker', 'ContentLocker']
-            let foundObject = null
+            let foundObject = ''
             
             possibleObjects.forEach(objName => {
               if (window[objName]) {
@@ -265,7 +267,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
     return () => {
       cleanupMyLeadElements()
     }
-  }, [])
+  }, [cleanupMyLeadElements])
 
   return (
     <>
@@ -301,7 +303,7 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
                   <AlertCircle className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
                   <p className="text-sm mb-2">No offer loaded yet</p>
                   <p className="text-xs text-gray-500 mb-4">
-                    If offers don't appear, try disabling ad blocker or check debug info below
+                    If offers don&apos;t appear, try disabling ad blocker or check debug info below
                   </p>
                   <button
                     onClick={() => setShowDebug(!showDebug)}
