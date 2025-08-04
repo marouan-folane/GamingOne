@@ -28,7 +28,6 @@ export default function DownloadCPAButton({ gameName = "Game" }: DownloadCPAButt
   }
 
   // Cleanup function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const cleanupMyLeadElements = () => {
     try {
       // Remove scripts
